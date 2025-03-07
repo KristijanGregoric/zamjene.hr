@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/general_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/header_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/main_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/sidebar_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/zamjene.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/both/cookies.css')}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <title>zamjene.hr</title>
+</head>
+
+
+<body>
+  <div id="cookie-notification" class="cookie-notification">
+    <p class="cookie-text">Ova web stranica koristi kolačiće kako bi poboljšala svoju funkcionalnost. Kolačići se koriste isključivo u tehničke svrhe i ne prikupljaju osobne podatke.</p>
+    <button class="cookie-btn" id="cookie-btn">OK</button>
+  </div>
+    <div class="main">
+      <header>
+        <div class="logo">
+          <span class="logo-text">zamjene.hr</span>
+        </div>
+        <div class="menu">
+          <div class="shape"></div>
+          <img class="menu-icon" onclick="toggleMenu()" src="{{ url_for('static', filename='pictures/menu.svg')}}">
+        </div>
+      </header>
+    
+      <div class="dropdown-menu" id="subMenu">
+          <div class="dropdown-box">
+            <p class="dropdown-text" onclick="changeUrl('/')">Početna</p>
+          </div>
+          {% if isLoggedIn=="True" %}
+            {% if skola!="True" %}
+              <div class="dropdown-box">
+                <p class="dropdown-text" onclick="changeUrl('/prikazzamjenaucenik')">Moje zamjene</p>
+              </div>
+              <div class="dropdown-box">
+                <p class="dropdown-text" onclick="changeUrl('/prikaziraspored')">Raspored predmeta</p>
+              </div>
+            {% endif %}
+            {% if admin!="True" %}
+              {% if skola=="True" %}
+              <div class="dropdown-box">
+                <p class="dropdown-text" onclick="changeUrl('/prikazzamjenaprofesor')">Moje zamjene</p>
+              </div>
+              {% endif %}
+              <div class="dropdown-box">
+                <p class="dropdown-text" onclick="changeUrl('/oglasnaploca')">Oglasna ploča</p>
+              </div>
+              <div class="dropdown-box">
+                <p class="dropdown-text" onclick="changeUrl('/rasporeducionica')">Raspored učionica</p>
+              </div>
+            {% endif %}
+            <div class="dropdown-box dark">
+              <form action="/downloadandroid" method="post">
+                <button class="dropdown-text dark" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;">Android</button>
+              </form>
+            </div>
+            <!--div class="dropdown-box ios-button">
+              <form action="/downloadios" method="post">
+                <button class="dropdown-text ios-button" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;" disabled>IOS</button>
+              </form>
+            </div-->
+          {% endif %}
+            {% if isLoggedIn=="True" %}
+                {% if skola=="True" %}
+                {% if profesor.email=="noemail" %}
+                <div class="dropdown-box dark">
+                  <p class="dropdown-text dark" onclick="changeUrl('/dodajemailprofesor')">Dodaj e-mail za obavijesti</p>
+                </div>
+                {% else %}
+              <div class="dropdown-box dark">
+                <p class="dropdown-text dark" onclick="changeUrl('/promjeniemailprofesor')">Promijeni svoj e-mail</p>
+              </div>
+              {% endif %}
+                  {% if profesor.is_admin==1 %}
+                  <div class="dropdown-box dark">
+                    <p class="dropdown-text dark" onclick="changeUrl('/viewprofile')">Upravni centar</p>
+                  </div>
+                  {% endif %}
+                <div class="dropdown-box dark">
+                  <p class="dropdown-text dark" onclick="changeUrl('/logout')">Odjavi se</p>
+                </div>
+                {% elif admin=="True" %}
+                <div class="dropdown-box">
+                  <p class="dropdown-text dark" onclick="changeUrl('/addschool')">Dodaj školu</p>
+                </div>
+                <div class="dropdown-box">
+                  <p class="dropdown-text dark" onclick="changeUrl('/logout')">Izađi iz admin moda</p>
+                </div>
+                {% else %}
+                <div class="dropdown-box dark">
+                  <p class="dropdown-text" onclick="changeUrl('/viewprofile')">Profil</p>
+                </div>
+                <div class="dropdown-box  dark">
+                  <p class="dropdown-text" onclick="changeUrl('/logout')">Odjavi se</p>
+                </div>
+                {% endif %}
+            {% endif %} 
+      </div>
+
+      
+        <div class="main-cont-zamjene main-cont">
+          <div class="whole-zamjene zamjene-standalone">
+            <br>
+            <form class="nova-zamjena-form" action="/dodajzamjenu" method="post">
+              <p class="section-title">Dodaj novu zamjenu</p>
+        
+              <div class="od-do-cont">
+                <p class="od-do">Zamjena za profesora:
+                  <select class="select-zamjene" id="zamjenaza" name="zamjenaza">
+                    <option value="Dodatan sat">Dodatan sat</option>
+                    {% for profesor in profesori %}
+                      <option value="{{ profesor }}">{{ profesor }}</option>
+                    {% endfor %}
+                  </select>
+                </p>
+              </div><br>
+        
+              <input class="nova-zamjna-kalendar" type="date" id="date" name="date"><br>
+        
+              <div class="od-do-cont">
+                <p class="od-do">Sat:
+                  <select class="select-zamjene" id="from" name="from">
+                    <option value="1. sat">1. sat</option>
+                    <option value="2. sat">2. sat</option>
+                    <option value="3. sat">3. sat</option>
+                    <option value="4. sat">4. sat</option>
+                    <option value="5. sat">5. sat</option>
+                    <option value="6. sat">6. sat</option>
+                    <option value="7. sat">7. sat</option>
+                    <option value="8. sat">8. sat</option>
+                    <option value="9. sat">9. sat</option>
+                  </select>
+                </p>
+        
+                <p>Blok sat:
+                  <input type="checkbox" class="select-zamjene-checkbox" id="to" name="to"></input>   
+                </p>
+        
+              </div>
+              <div class="od-do-cont">
+                <p class="od-do">Razred:
+                  <select class="select-zamjene" id="razred" name="razred">
+                    {% for razred in razredi %}
+                      <option value="{{ razred.id }}">{{ razred.name }}</option>
+                    {% endfor %}
+                  </select>
+                </p>
+              </div>
+              <div class="od-do-cont">
+                <p class="od-do">Broj novih predmeta:
+                  <select class="select-zamjene" id="broj-novih-predmeta" name="broj-novih-predmeta">
+                    {% for i in range(1, 11) %}
+                      <option value="{{ i }}" {% if i == 1 %} selected {% endif %}>{{ i }}</option>
+                    {% endfor %}
+                  </select>
+                </p>
+              </div>
+              
+              <div class="od-do-cont" id="novi-predmet-section">
+                <p class="novipredmet">Novi predmet/predmeti: <br><br>
+                  {% for i in range(1, 11) %}
+                    <select class="select-zamjene" id="novipredmet{{ i }}" name="novipredmet{{ i }}" style="display: {% if i == 1 %}block{% else %}none{% endif %};">
+                      <option value="Slobodan Sat, 0">Slobodan sat</option>
+                      {% for predmet in predmeti %}
+                      <option class="novipredmet" value="{{ predmet }}">{{ predmet[0] }}</option>
+                      {% endfor %}
+                    </select>
+                  {% endfor %}
+                </p>
+              </div>
+        
+              <input class="input-obavijesti"  type="text" name="biljeska" placeholder="Bilješka"><br><br>
+        
+              <input class="dodaj-zamjenu-button" type="submit" value="Dodaj zamjenu">
+            </form> <br>
+            <section class="zamjene-cont">
+              <section>
+                {% for zamjena in sve_zamjene %}
+                  {% if school_id == zamjena.school_id %}
+                      <div id="zamjene-cont-skola{{ zamjena.id }}">
+                        <div id="changeBox{{ zamjena.id }}">
+                          Datum zamjene: {{ zamjena.datum.strftime('%d-%m-%Y') }} ({{ zamjena.datum | string | dan }})<br>
+                          Zamjena za: {{ zamjena.stariprofesor }} <br>
+                          {{ zamjena.od }} <br>
+                          Razred: {{ zamjena.classroom_id | razred }} <br>
+                          Novi predmet/predmeti: <br>
+                          {% for predmet in zamjena.zamjena.split(' - ') %}
+                            {{ predmet }}<br>
+                          {% endfor %}
+                          {% if zamjena.bilješka!="" %}
+                            Bilješka: {{ zamjena.biljeska }}
+                          {% endif %}
+                          <button class="dodaj-zamjenu-button" onclick="editZamjena('{{ zamjena.id }}')">Napravi promjene</button>
+                        </div>
+
+                        
+
+
+                        <form action="/editzamjena" method="POST" id="editForm{{ zamjena.id }}" style="display: none;">
+                          <div class="od-do-cont">
+                            <p class="od-do">Zamjena za profesora:
+                              <select class="select-zamjene" id="zamjenaza" name="zamjenaza">
+                                <option value="Dodatan sat">Dodatan sat</option>
+                                {% for profesor in profesori %}
+                                  <option value="{{ profesor }}">{{ profesor }}</option>
+                                {% endfor %}
+                              </select>
+                            </p>
+                          </div><br>
+
+                          <input class="nova-zamjna-kalendar" type="date" id="date" name="date"><br>
+
+                          <div class="od-do-cont">
+                            <p class="od-do">Sat:
+                              <select class="select-zamjene" id="from" name="from">
+                                <option value="1. sat">1. sat</option>
+                                <option value="2. sat">2. sat</option>
+                                <option value="3. sat">3. sat</option>
+                                <option value="4. sat">4. sat</option>
+                                <option value="5. sat">5. sat</option>
+                                <option value="6. sat">6. sat</option>
+                                <option value="7. sat">7. sat</option>
+                                <option value="8. sat">8. sat</option>
+                                <option value="9. sat">9. sat</option>
+                              </select>
+                            </p>
+
+                            <p>Blok sat:
+                              <input type="checkbox" class="select-zamjene-checkbox" id="to" name="to"></input>   
+                            </p>
+
+                          </div>
+                          <div class="od-do-cont">
+                            <p class="od-do">Razred:
+                              <select class="select-zamjene" id="razred" name="razred">
+                                {% for razred in razredi %}
+                                  <option value="{{ razred.id }}">{{ razred.name }}</option>
+                                {% endfor %}
+                                
+                              </select>
+                            </p>
+                          </div>
+                          <div class="od-do-cont">
+                            <p class="od-do">Broj novih predmeta:
+                              <select class="select-zamjene" id="broj-novih-predmeta-2" name="broj-novih-predmeta-2">
+                                {% for i in range(1, 11) %}
+                                  <option value="{{ i }}" {% if i == 1 %} selected {% endif %}>{{ i }}</option>
+                                {% endfor %}
+                              </select>
+                            </p>
+                          </div>
+                          
+                          <div class="od-do-cont" id="novi-predmet-section-2">
+                            <p class="novipredmet">Novi predmet/predmeti: <br><br>
+                              {% for i in range(1, 11) %}
+                                <select class="select-zamjene" id="novipredmet{{ i }}" name="novipredmet{{ i }}" style="display: {% if i == 1 %}block{% else %}none{% endif %};">
+                                  <option value="Slobodan Sat, 0">Slobodan sat</option>
+                                  {% for predmet in predmeti %}
+                                    <option value="{{ predmet }}">{{ predmet[0] }}</option>
+                                  {% endfor %}
+                                </select>
+                              {% endfor %}
+                            </p>
+                          </div>
+
+                          <input class="input-obavijesti"  type="text" name="biljeska" placeholder="Bilješka (nije obavezna)">
+                          <button class="dodaj-zamjenu-button" type="submit">Spremi</button>
+                          <input class="input-obavijesti"  type="text" name="zamjenaID" value="{{ zamjena.id }}" hidden><br><br>
+
+                          
+                        </form>
+
+                        <form class="delete-zamjena-form" action="/delete_zamjene/{{ zamjena.id }}" method="post">
+                          <input class="dodaj-zamjenu-button" type="submit" value="Obriši zamjenu">
+                          <input type="hidden" name="school_id" value="">
+                          <input type="hidden" name="classroom_id" value="{{ classroomid }}">
+                        </form>
+                      </div><br>
+                  {% endif %}
+                {% endfor %}
+              </section>
+            </section>  
+          </div>            
+        </div>
+    </div>
+</body>
+
+<script>
+function changeUrl(url){
+    window.location.href=url;
+    var button = document.activeElement;
+    button.disabled = true;
+}
+</script>
+<script>
+
+let subMenu = document.getElementById("subMenu");
+  
+function toggleMenu(){
+    subMenu.classList.toggle("open-menu");
+}
+</script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    var cookieNotification = document.getElementById("cookie-notification");
+    var cookieBtn = document.getElementById("cookie-btn");
+
+    if (!localStorage.getItem("cookiesAccepted")) {
+        cookieNotification.style.display = "block";
+    }
+
+    cookieBtn.addEventListener("click", function () {
+        cookieNotification.style.display = "none";
+        localStorage.setItem("cookiesAccepted", true);
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var brojNovihPredmetaSelect = document.getElementById("broj-novih-predmeta");
+    var noviPredmetSection = document.getElementById("novi-predmet-section");
+
+    brojNovihPredmetaSelect.addEventListener("change", function () {
+        var noviPredmetSelects = noviPredmetSection.querySelectorAll(".select-zamjene");
+
+        for (var i = 0; i < noviPredmetSelects.length; i++) {
+            if (i < brojNovihPredmetaSelect.value) {
+                noviPredmetSelects[i].style.display = "block";
+            } else {
+                noviPredmetSelects[i].style.display = "none";
+            }
+        }
+    });
+    var brojNovihPredmetaSelects = document.querySelectorAll("[id^='broj-novih-predmeta-2']");
+
+    brojNovihPredmetaSelects.forEach(function(brojNovihPredmetaSelect) {
+      brojNovihPredmetaSelect.addEventListener("change", function () {
+        var noviPredmetSections = this.closest(".od-do-cont").nextElementSibling;
+        var noviPredmetSelects = noviPredmetSections.querySelectorAll(".select-zamjene");
+
+        for (var i = 0; i < noviPredmetSelects.length; i++) {
+            if (i < this.value) {
+                noviPredmetSelects[i].style.display = "block";
+            } else {
+                noviPredmetSelects[i].style.display = "none";
+            }
+        }
+        });
+    });
+});
+
+
+</script>
+<script>
+
+function editZamjena(zamjenaId) {
+    var changeBox = document.getElementById('changeBox' + zamjenaId);
+    changeBox.querySelector('.dodaj-zamjenu-button').style.display = 'none';
+    var editForm = document.getElementById('editForm' + zamjenaId);
+    var wholeZamjena = document.getElementById('zamjene-cont-skola' + zamjenaId);
+    
+    var deleteForm = wholeZamjena.querySelector('.delete-zamjena-form');
+    console.log(deleteForm); 
+    deleteForm.style.display = 'none';
+    if (changeBox && editForm) {
+      var oldDate = "", oldProf = "", oldFrom = "", oldTo = "", oldRazred = "", oldBrojPredmeta = 0, oldBiljeska = "", oldPredmeti = [];
+      var nodes = changeBox.childNodes;
+      for (var i = 0; i < nodes.length; i++) {
+        var textContent = nodes[i].textContent.trim();
+        if (textContent.startsWith('Datum zamjene')) {
+          var oldDateText = textContent.substring(textContent.indexOf(':') + 1).trim();
+          var oldDate = oldDateText.split(' ')[0];
+          var parts = oldDate.split('-');
+          var oldDateFormatted = parts[2] + '-' + parts[1] + '-' + parts[0];
+        } else if (textContent.startsWith('Zamjena za')) {
+          oldProf = textContent.substring(textContent.indexOf(':') + 1).trim();
+        } else if (textContent.startsWith('1.') || textContent.startsWith('2.') || textContent.startsWith('3.') || textContent.startsWith('4.') || textContent.startsWith('5.') || textContent.startsWith('6.') || textContent.startsWith('7.') || textContent.startsWith('8.') || textContent.startsWith('9.') || textContent.startsWith('10.')) {
+          oldSat = textContent.split("i");
+          if (oldSat.length==1 ){
+            oldSat = oldSat[0];
+            oldTo = false;
+          }else{
+            oldSat = oldSat[0] + "sat";
+            oldTo = true;
+          }
+        } else if (textContent.startsWith('Razred')) {
+          oldRazred = textContent.substring(textContent.indexOf(':') + 1).trim();
+        } else if (textContent.includes("|")) {
+          oldBrojPredmeta = parseInt(oldBrojPredmeta) + 1;
+          oldPredmeti.push(textContent);
+        } else if (textContent.startsWith('Bilješka')) {
+          oldBiljeska = textContent.substring(textContent.indexOf(':') + 1).trim();
+        }
+      }
+      changeBox.style.display = 'none';
+      editForm.style.display = 'block';
+      editForm.querySelector('#date').value = oldDateFormatted;
+      editForm.querySelector('#zamjenaza').value = oldProf;
+      editForm.querySelector('#from').value = oldSat;
+      editForm.querySelector('#to').checked = oldTo; 
+      var razredSelect = editForm.querySelector('#razred');
+      var options = razredSelect.options;
+      for (var i = 0; i < options.length; i++) {
+        if (options[i].text === oldRazred) {
+          options[i].selected = true;
+          break;
+        }
+      }
+      editForm.querySelector('#broj-novih-predmeta-2').value = parseInt(oldBrojPredmeta);
+      var brojNovihPredmetaSelect = parseInt(oldBrojPredmeta);
+      var noviPredmetSection = wholeZamjena.querySelector("#novi-predmet-section-2");
+      var noviPredmetSelects = noviPredmetSection.querySelectorAll(".select-zamjene");
+      for (var i = 0; i < brojNovihPredmetaSelect; i++) {
+          noviPredmetSelects[i].style.display = "block";
+      }
+    
+      for (var i = 0; i < oldPredmeti.length; i++) {
+          var options = noviPredmetSelects[i].options;
+          for (var j = 0; j < options.length; j++) {
+              let startIndex = options[j].value.indexOf("'");
+              let endIndex = options[j].value.indexOf("'", startIndex + 1);
+              let x = options[j].value.slice(startIndex + 1, endIndex);
+              if (x === oldPredmeti[i]) {
+                  options[j].selected = true;
+                  break;
+              }
+              console.log(options[j].value);
+          }
+      }
+      editForm.querySelector('.input-obavijesti').value = oldBiljeska;
+    }
+  }
+</script>
+</html>
+
+
+
+
+
+

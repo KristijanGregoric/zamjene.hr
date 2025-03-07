@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    user-select: none; 
+}
+
+.main {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-container {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.logo-text {
+    font-size: 48px;
+    font-weight: bold;
+    color: rgb(110, 110, 202);
+    margin-bottom: 50px;
+}
+
+.main-cont-start {
+    text-align: center;
+}
+
+.starttext {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-family: Montserrat;
+    font-weight: 600;
+}
+
+.startloginiliregister {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebarbuttonstart {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 7px;
+    padding: 5px 10px 5px 10px;
+    background-color: rgb(110, 110, 202);
+    color: white;
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: scale 0.2s, opacity 0.1s;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
+    transition: scale 0.2s;
+    width: 175px;
+}
+
+.sidebarbuttonstart:hover {
+    background-color: rgb(56, 76, 131);
+    scale: 1.1;
+}
+
+.darkbutton {
+    background-color: rgb(34, 46, 80);
+}

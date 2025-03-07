@@ -1,0 +1,82 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-cont {
+  width: 85%;
+  height: 95%;
+  overflow-x: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule {
+  display: block;
+  margin: auto;
+  table-layout: fixed;
+  width: 95%;
+  overflow-y: scroll;
+}
+
+.schedule th,
+.schedule td {
+  padding: 0px;
+  width: 30px;
+  font-size: 12px;
+  text-align: center;
+  cursor: default;
+  border: 1px solid rgb(174, 174, 243);
+  background-color: transparent;
+  overflow: visible;
+}
+.schedule th{
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.schedule th:first-of-type {
+  border: none; /* Remove border for the first th */
+}
+
+.schedule td:first-child {
+  border: none; /* Remove borders for the first column */
+}
+
+.schedule tr:first-child td {
+  border: none; /* Remove borders for the first row */
+}
+
+.schedule input[type="text"] {
+  width: 100%;
+  padding: 0;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+  cursor: default;
+  color: rgb(34, 46, 80);
+  border: none;
+}
+
+
+.info{
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+}
+
+.smjena{
+  margin: 25px;
+}
+
+.smjena-text{
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 18px;
+}

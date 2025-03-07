@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pc/login.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/both/cookies.css')}}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='pictures/favicon.png')}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <title>zamjene.hr</title>
+</head>
+
+
+
+<body>
+  <div id="cookie-notification" class="cookie-notification">
+    <p class="cookie-text">Ova web stranica koristi kolačiće kako bi poboljšala svoju funkcionalnost. Kolačići se koriste isključivo u tehničke svrhe i ne prikupljaju osobne podatke.</p>
+    <button class="cookie-btn" id="cookie-btn">OK</button>
+  </div>
+  <div class="body-login">
+    <section class="login-window">
+      <img class="user-icon-login" src="{{ url_for('static', filename='pictures/user.svg')}}">
+      <p class="login-text">Prijavite se kao učenik</p><br>
+      <form class="login-container" action="/loginsend" method="POST">
+        <input class="input-box" type="text" placeholder="E-Mail" name="email" id="email">
+        <input class="input-box" type="password" placeholder="Lozinka" id="password" name="password"><br>
+        <button style="width:106%;" type="submit">Prijavi se</button><br>
+      </form>
+      <p class="noaccounttext">Ako nemaš račun:</p>
+      <button class="signup-loginbox" onclick="changeUrl('/register')">Napravi račun</button>
+      <p class="noaccounttext">Ako ste zaboravili lozinku:</p>
+      <button class="signup-loginbox" onclick="changeUrl('/forgotpassword')">Pošalji novu</button>
+    </section>
+    
+    {% if error %}
+      <div class="background-shadow"></div>
+      <section class="wrong-info-container">
+        <img class="alert-icon" src="{{ url_for('static', filename='pictures/alert-circle.svg')}}"><br>
+        <p class="wrong-info-text">{{ error }}</p><br>
+        <div class="line"></div>
+        <button onclick="changeUrl('/login')" class="try-again-button">Pokušaj ponovno</button>
+      </section>
+    {% endif %}
+  </div>
+</body>
+
+<script>
+function changeUrl(url){
+    var button = document.activeElement;
+    button.disabled = true;
+    window.location.href = url;
+}
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var cookieNotification = document.getElementById("cookie-notification");
+    var cookieBtn = document.getElementById("cookie-btn");
+
+    if (!localStorage.getItem("cookiesAccepted")) {
+      cookieNotification.style.display = "block";
+    }
+
+    cookieBtn.addEventListener("click", function () {
+      cookieNotification.style.display = "none";
+      localStorage.setItem("cookiesAccepted", true);
+    });
+  });
+</script>
+
+</html>

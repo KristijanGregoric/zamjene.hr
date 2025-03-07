@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/general_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/header_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/main_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/sidebar_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/skolamenu.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/both/cookies.css')}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <title>zamjene.hr</title>
+</head>
+
+
+<body>
+  <div id="cookie-notification" class="cookie-notification">
+    <p class="cookie-text">Ova web stranica koristi kolačiće kako bi poboljšala svoju funkcionalnost. Kolačići se koriste isključivo u tehničke svrhe i ne prikupljaju osobne podatke.</p>
+    <button class="cookie-btn" id="cookie-btn">OK</button>
+  </div>
+  <div class="main">
+    <header>
+      <div class="logo">
+        <span class="logo-text">zamjene.hr</span>
+      </div>
+      <div class="menu">
+        <div class="shape"></div>
+        <img class="menu-icon" onclick="toggleMenu()" src="{{ url_for('static', filename='pictures/menu.svg')}}">
+      </div>
+    </header>
+  
+    <div class="dropdown-menu" id="subMenu">
+          {% if isLoggedIn=="True" %}
+          <div class="dropdown-box dark">
+            <form action="/downloadandroid" method="post">
+              <button class="dropdown-text dark" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;">Android</button>
+            </form>
+          </div>
+          <!--div class="dropdown-box ios-button">
+            <form action="/downloadios" method="post">
+              <button class="dropdown-text ios-button" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;" disabled>IOS</button>
+            </form>
+          </div-->
+              {% if Skola=="True" %}
+              <div class="dropdown-box dark">
+                <p class="dropdown-text dark" onclick="changeUrl('/skolaadminmenu')">Upravni centar</p>
+              </div>
+              <div class="dropdown-box dark">
+                <p class="dropdown-text dark" onclick="changeUrl('/logout')">Odjavi se</p>
+              </div>
+              {% elif admin=="True" %}
+              <div class="dropdown-box">
+                <p class="dropdown-text dark" onclick="changeUrl('/addschool')">Dodaj školu</p>
+              </div>
+              <div class="dropdown-box">
+                <p class="dropdown-text dark" onclick="changeUrl('/logout')">Izađi iz admin moda</p>
+              </div>
+              {% else %}
+              <div class="dropdown-box dark">
+                <p class="dropdown-text" onclick="changeUrl('/viewprofile')">Profil</p>
+              </div>
+              <div class="dropdown-box  dark">
+                <p class="dropdown-text" onclick="changeUrl('/logout')">Odjavi se</p>
+              </div>
+              {% endif %}
+          {% endif %} 
+     </div>
+      <div class="main-cont">
+      
+        <div class="skola-main-container">
+          <div class="skola-main">
+            <p class="skola-title">Upravni centar</p>
+            <p>Ime škole: <br> {{ skola.name }}</p>
+            <p>ID škole: {{ skola.id }}</p>
+          </div>
+
+          <div class="skola-raspored-ucionica">
+            <form action="/update_table" method="get">
+              <input type="hidden" name="school_id" value="{{ skola.id }}">
+            </form>
+          </div>
+        </div>
+
+        <div class="skola-obavijesti">    
+          <p class="skola-title">Arhiva:</p>
+          <div class="arhiva">
+            <button class="dodaj-obavijest-button" onclick="changeUrl('/arhivaobavijesti')">Arhiva obavijesti</button>
+          </div>
+          <div class="arhiva">
+            <button class="dodaj-obavijest-button" onclick="changeUrl('/arhivazamjene')">Arhiva zamjena</button>
+          </div>
+        </div>
+
+        <div class="skola-razredi">
+          <form class="novi-razred-form-admin" method="post" action="/dodajprofesora"> 
+            <label class="skola-title" for="classroom_name">Dodaj novog profesora kao administratora:</label><br><br>
+            <input class="input-obavijesti"  type="text" name="name" placeholder="Ime i prezime profesora" required>
+            <p class="obavijest-title-v2">Satničar: <input type="checkbox" class="select-zamjene-checkbox" id="is_admin" name="is_admin"></input> </p>
+            <input class="dodaj-obavijest-button" type="submit" value="Dodaj novog profesora">
+          </form>
+
+          <section class="sve-obavijesti">
+            <p class="sviprofesori-skola-title">Svi profesori:</p>
+            {% for profesor in profesori %}
+            <p>
+              <div class="razred-info hidden">
+                <p class="obavijest-title">Ime i prezime profesora: {{ profesor.name }} </p>
+                <p class="obavijest-content">ID: <span class="id-span">****</span></p>
+                <p class="obavijest-content">PIN: <span class="pin-span">****</span></p>
+                <p class="obavijest-content">Satničar: 
+                  {% if profesor.is_admin==1 %}
+                    da
+                  {% else %}
+                    ne
+                  {% endif %}
+                </p><br>
+                <button class="show-hide-button obrisi-razred-button" onclick="toggleVisibility(this, {{ profesor.id }}, {{ profesor.pin }})">Prikaži / Sakrij</button>
+                <section>
+                  <form action="/obrisiprofesora" method="post">
+                    <button class="obrisi-razred-button" type="submit">Obriši profesora</button>
+                    <input type="hidden" name="school_id" value="{{ skola.id }}">
+                    <input type="hidden" name="id" value="{{ profesor.id }}">
+                  </form>
+                </section>
+              </div>
+            </p>
+            {% endfor %}
+          </section>
+        </div>   
+      </div>
+  </div>
+</body>
+
+
+
+<script>
+function changeUrl(url){
+    var button = document.activeElement;
+    button.disabled = true;
+    window.location.href = url;
+}
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var cookieNotification = document.getElementById("cookie-notification");
+    var cookieBtn = document.getElementById("cookie-btn");
+
+    if (!localStorage.getItem("cookiesAccepted")) {
+      cookieNotification.style.display = "block";
+    }
+
+    cookieBtn.addEventListener("click", function () {
+      cookieNotification.style.display = "none";
+      localStorage.setItem("cookiesAccepted", true);
+    });
+  });
+
+
+  function toggleVisibility(button, profesorid, profesorpin) {
+    const parentDiv = button.parentElement;
+    const hiddenSection = parentDiv;
+    const idSpan = parentDiv.querySelector('.id-span');
+    const pinSpan = parentDiv.querySelector('.pin-span');
+
+    if (hiddenSection.classList.contains('hidden')) {
+      hiddenSection.classList.remove('hidden');
+      idSpan.innerText = profesorid; 
+      pinSpan.innerText = profesorpin; 
+    } else {
+      hiddenSection.classList.add('hidden');
+      idSpan.innerText = '****';
+      pinSpan.innerText = '****';
+    }
+  }
+
+
+  let subMenu = document.getElementById("subMenu");
+  
+  function toggleMenu(){
+    subMenu.classList.toggle("open-menu")
+  }
+</script>
+</html>
+
+
+
+
+
+

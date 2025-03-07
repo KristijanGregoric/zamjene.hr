@@ -1,0 +1,33 @@
+.main-cont {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+  height: 100vh;
+}
+
+.schedule {
+  background-color: rgb(253, 239, 239);
+}
+
+.schedule th,
+.schedule td {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-family: Montserrat;
+  font-size: 20px;
+  cursor: default;
+  border: 1px solid rgb(174, 174, 243);
+  border-radius: 5px;
+  background-color: rgb(253, 239, 239);
+}
+
+.schedule input[type="text"] {
+  width: 100%;
+  font-family: Montserrat;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: default;
+  color: rgb(34, 46, 80) !important;
+}

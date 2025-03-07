@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/general_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/header_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/main_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css-old/mobile/sidebar_mobile.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/both/cookies.css')}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <title>zamjene.hr</title>
+</head>
+
+<body>
+  <div id="cookie-notification" class="cookie-notification">
+    <p class="cookie-text">Ova web stranica koristi kolačiće kako bi poboljšala svoju funkcionalnost. Kolačići se koriste isključivo u tehničke svrhe i ne prikupljaju osobne podatke.</p>
+    <button class="cookie-btn" id="cookie-btn">OK</button>
+  </div>
+  <header>
+    <div class="logo">
+      <span class="logo-text">zamjene.hr</span>
+    </div>
+    <div class="menu">
+      <div class="shape"></div>
+      <img class="menu-icon" onclick="toggleMenu()" src="{{ url_for('static', filename='pictures/menu.svg')}}">
+    </div>
+  </header>
+
+  <div class="dropdown-menu" id="subMenu">
+        {% if isLoggedIn=="True" %}
+        <div class="dropdown-box dark">
+          <form action="/downloadandroid" method="post">
+            <button class="dropdown-text dark" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;">Android</button>
+          </form>
+        </div>
+        <!--div class="dropdown-box ios-button">
+          <form action="/downloadios" method="post">
+            <button class="dropdown-text ios-button" type="submit" style="border: none; margin-top: 10px; margin-bottom: 10px; font-size: 18px; font-family: Montserrat;" disabled>IOS</button>
+          </form>
+        </div-->
+            {% if skola=="True" %}
+            <div class="dropdown-box dark">
+              <p class="dropdown-text dark" onclick="changeUrl('/skolaadminmenu')">Upravni centar</p>
+            </div>
+            <div class="dropdown-box dark">
+              <p class="dropdown-text dark" onclick="changeUrl('/logout')">Odjavi se</p>
+            </div>
+            {% elif admin=="True" %}
+            <div class="dropdown-box">
+              <p class="dropdown-text dark" onclick="changeUrl('/addschool')">Dodaj školu</p>
+            </div>
+            <div class="dropdown-box">
+              <p class="dropdown-text dark" onclick="changeUrl('/logout')">Izađi iz admin moda</p>
+            </div>
+            {% else %}
+            <div class="dropdown-box dark">
+              <p class="dropdown-text" onclick="changeUrl('/viewprofile')">Profil</p>
+            </div>
+            <div class="dropdown-box  dark">
+              <p class="dropdown-text" onclick="changeUrl('/logout')">Odjavi se</p>
+            </div>
+            {% endif %}
+        {% endif %} 
+  </div>
+
+  <main class="page-center">
+    <style>
+      #searchBar {
+          padding: 8px;
+          margin-bottom: 10px;
+          width: 100%;
+          box-sizing: border-box;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 16px;
+      }
+  
+      #searchBar:focus {
+          outline: none;
+          border-color: rgb(110, 110, 202);
+          box-shadow: 0 0 5px rgb(110, 110, 202);
+      }
+    </style>
+    <div class="news-board standalone">
+        <section class="obavijesti-cont obavijesti-standalone">
+          <input type="text" id="searchBar" placeholder="Pretraži...">
+          {% if sve_obavijesti %}
+            {% for obavijest in sve_obavijesti %}
+              <div class="post-box">
+                <div class="post-desc">Naslov obavijesti: {{ obavijest.name }}</div> 
+                <div class="post-desc">Sadržaj obavijesti: {{ obavijest.content }}</div>
+                <div class="post-desc">Dodano dana: {{ obavijest.date_added }}</div> 
+                <div class="post-desc">Dodao profesor: {{ obavijest.dodao_profesor | profesor }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="post-title">Nema obavijesti</p>
+          {% endif %}
+        </section>
+    </div>
+
+  </main>
+
+  <script>
+    let subMenu = document.getElementById("subMenu");
+
+    function toggleMenu(){
+      subMenu.classList.toggle("open-menu")
+    }
+
+
+    function changeUrl(url){
+      window.location.href=url;
+      var button = document.activeElement;
+      button.disabled = true;
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var cookieNotification = document.getElementById("cookie-notification");
+      var cookieBtn = document.getElementById("cookie-btn");
+  
+      if (!localStorage.getItem("cookiesAccepted")) {
+        cookieNotification.style.display = "block";
+      }
+  
+      cookieBtn.addEventListener("click", function () {
+        cookieNotification.style.display = "none";
+        localStorage.setItem("cookiesAccepted", true);
+      });
+    });
+  </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var searchBar = document.getElementById("searchBar");
+      var obavijestiEntries = document.querySelectorAll(".post-box");
+
+      searchBar.addEventListener("input", function () {
+          var searchQuery = searchBar.value.toLowerCase();
+
+          obavijestiEntries.forEach(function (entry) {
+              var textContent = entry.textContent.toLowerCase();
+              if (textContent.includes(searchQuery)) {
+                  entry.style.display = "block";
+              } else {
+                  entry.style.display = "none";
+              }
+          });
+      });
+  });
+</script>
+
+</body>
+</html>

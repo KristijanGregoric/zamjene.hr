@@ -1,0 +1,9 @@
+.smjena{
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 18px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

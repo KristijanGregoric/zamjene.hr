@@ -1,0 +1,99 @@
+.news-board, .changes-box {
+  margin-right: 15px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 420px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+  border-radius: 7px;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 51px;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 91vh;
+}
+
+.schedule{
+  margin-top: 10px;
+}
+
+.post-box {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  margin-right: 10px;
+  margin-left: 10px;
+  border-color: rgba(0,0,0,0.3);
+}
+
+.post-title {
+  font-weight: bold;
+  font-family: Montserrat;
+  font-size: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  text-shadow: 3px 1px 10px rgba(0,0,0,0.2);
+  color: rgb(27, 23, 23);
+  cursor: default;
+}
+
+.post-desc{
+    font-family: Montserrat;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-shadow: 3px 1px 10px rgba(0,0,0,0.2);
+    color: rgb(27, 23, 23);
+    cursor: default; 
+}
+
+.post-image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.post-image {
+  object-fit: contain;
+  margin-bottom: 15px;
+  border-radius: 7px;
+  width: 90%;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+}
+
+.whole-obavijesti{
+    padding: 0px 15px 15px 15px;
+    padding-bottom: 0px;
+    width: 50%;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+    max-height: 97%;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.obavijesti-cont{
+    padding: 10px 10px;
+    height: fit-content;
+}
+
+.obavijesti-section{
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.obavijesti-standalone{
+  width: 100%;
+}
